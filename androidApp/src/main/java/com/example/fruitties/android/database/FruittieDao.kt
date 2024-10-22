@@ -32,7 +32,7 @@ interface FruittieDao {
     fun insert(fruitties: List<Fruittie>)
 
     @Query("SELECT * FROM Fruittie")
-    fun getAllAsFlow(): LiveData<List<Fruittie>>
+    fun getAllAsLiveData(): LiveData<List<Fruittie>>
 
     @Query("SELECT COUNT(*) as count FROM Fruittie")
     fun count(): Int

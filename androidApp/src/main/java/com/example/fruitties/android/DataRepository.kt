@@ -16,6 +16,7 @@
 package com.example.fruitties.android
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.example.fruitties.android.database.AppDatabase
 import com.example.fruitties.android.database.CartDataStore
@@ -23,9 +24,11 @@ import com.example.fruitties.android.database.CartItemDetails
 import com.example.fruitties.android.database.Fruittie
 import com.example.fruitties.android.network.FruittieApi
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DataRepository(
     private val api: FruittieApi,
@@ -51,16 +54,23 @@ class DataRepository(
     }
 
     fun getData(): LiveData<List<Fruittie>> {
+        val liveData = MutableLiveData<List<Fruittie>>()
         scope.launch {
             if (database.fruittieDao().count() < 1) {
                 refreshData()
             }
+            // Switch to the main dispatcher to observe the LiveData
+            withContext(Dispatchers.Main) {
+                loadData().observeForever { fruitties ->
+                    liveData.value = fruitties
+                }
+            }
         }
-        return loadData()
+        return liveData
     }
 
     fun loadData(): LiveData<List<Fruittie>> {
-        return database.fruittieDao().getAllAsFlow()
+        return database.fruittieDao().getAllAsLiveData()
     }
 
     suspend fun refreshData() {
