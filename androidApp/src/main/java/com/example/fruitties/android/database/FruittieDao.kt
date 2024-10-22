@@ -38,7 +38,7 @@ interface FruittieDao {
     suspend fun count(): Int
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
-    suspend fun loadAllELIF(ids: List<Long>): List<Fruittie>
+    suspend fun loadAllElif(ids: List<Long>): List<Fruittie>
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
     suspend fun loadMapped(ids: List<Long>): Map<

@@ -20,7 +20,7 @@
         android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.example.fruitties.di.App">
+        android:name="com.example.fruitties.android.di.App">
         <activity
             android:name=".MainActivity"
             android:exported="true">
