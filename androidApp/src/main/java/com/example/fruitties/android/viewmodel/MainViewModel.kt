@@ -16,9 +16,10 @@
 
 package com.example.fruitties.android.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asFlow
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
@@ -28,29 +29,15 @@ import com.example.fruitties.android.DataRepository
 import com.example.fruitties.android.di.AppContainer
 import com.example.fruitties.android.database.CartItemDetails
 import com.example.fruitties.android.database.Fruittie
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: DataRepository) : ViewModel() {
 
-    val homeUiState: StateFlow<HomeUiState> =
-        repository.getData().asFlow().map { HomeUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = HomeUiState(),
-            )
+    val homeUiState: LiveData<HomeUiState> =
+        repository.getData().map { HomeUiState(it) }
 
-    val cartUiState: StateFlow<CartUiState> =
-        repository.cartDetails.asFlow().map { CartUiState(it) }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = CartUiState(),
-            )
+    val cartUiState: LiveData<CartUiState> =
+        repository.cartDetails().map { CartUiState(it) }
 
     fun addItemToCart(fruittie: Fruittie) {
         viewModelScope.launch {

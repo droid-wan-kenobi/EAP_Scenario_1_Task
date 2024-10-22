@@ -25,8 +25,8 @@ import com.example.fruitties.android.database.Fruittie
 import com.example.fruitties.android.network.FruittieApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -36,15 +36,18 @@ class DataRepository(
     private val cartDataStore: CartDataStore,
     private val scope: CoroutineScope,
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val cartDetails: LiveData<List<CartItemDetails>> = liveData {
-        cartDataStore.cart.mapLatest {
-            val ids = it.items.map { it.id }
-            val fruitties = database.fruittieDao().loadMapped(ids)
-            it.items.mapNotNull {
-                fruitties[it.id]?.let { fruittie ->
-                    CartItemDetails(fruittie, it.count)
-                }
+    fun cartDetails(): LiveData<List<CartItemDetails>> = liveData {
+        withContext(Dispatchers.IO) {
+            cartDataStore.cart.collect {
+                val ids = it.items.map { it.id }
+                val fruitties = database.fruittieDao().loadMapped(ids)
+                emit(
+                    it.items.mapNotNull {
+                        fruitties[it.id]?.let { fruittie ->
+                            CartItemDetails(fruittie, it.count)
+                        }
+                    }
+                )
             }
         }
     }
@@ -66,7 +69,7 @@ class DataRepository(
                 }
             }
         }
-        return liveData
+        return loadData()
     }
 
     fun loadData(): LiveData<List<Fruittie>> {

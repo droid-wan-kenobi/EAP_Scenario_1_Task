@@ -46,8 +46,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,6 +63,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fruitties.android.R
 import com.example.fruitties.android.database.CartItemDetails
 import com.example.fruitties.android.database.Fruittie
+import com.example.fruitties.android.viewmodel.CartUiState
+import com.example.fruitties.android.viewmodel.HomeUiState
 import com.example.fruitties.android.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,8 +85,8 @@ fun ListScreen() {
         extras = extras,
     )
 
-    val uiState by viewModel.homeUiState.collectAsState()
-    val cartState by viewModel.cartUiState.collectAsState()
+    val uiState by viewModel.homeUiState.observeAsState(HomeUiState())
+    val cartState by viewModel.cartUiState.observeAsState(CartUiState())
 
     Scaffold(
         topBar = {
