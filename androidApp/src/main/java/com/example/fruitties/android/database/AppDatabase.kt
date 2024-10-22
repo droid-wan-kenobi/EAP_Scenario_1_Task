@@ -15,16 +15,18 @@
  */
 package com.example.fruitties.android.database
 
+import android.annotation.SuppressLint
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
+import androidx.room.util.useCursor
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [Fruittie::class],
-    version = 2,
+    version = 5,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(
@@ -40,15 +42,19 @@ abstract class AppDatabase : RoomDatabase() {
     @RenameColumn.Entries(
         RenameColumn(
             tableName = "Fruittie",
-            fromColumnName = "fullName",
-            toColumnName = "servingSize"
+            fromColumnName = "name",
+            toColumnName = "fruitName"
         )
     )
     internal class FruittieAutoMigrationSpec : AutoMigrationSpec {
+        @SuppressLint("RestrictedApi")
         override fun onPostMigrate(db: SupportSQLiteDatabase) {
-            // Do something
+            db.query(
+                "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'room_master_table'"
+            ).useCursor {
+                check(it.moveToNext())
+                check(it.getInt(0) == 1)
+            }
         }
     }
 }
-
-const val dbFileName = "shoppingCart.db"

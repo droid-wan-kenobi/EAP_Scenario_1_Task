@@ -15,12 +15,12 @@
  */
 package com.example.fruitties.android.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.MapColumn
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FruittieDao {
@@ -32,13 +32,13 @@ interface FruittieDao {
     fun insert(fruitties: List<Fruittie>)
 
     @Query("SELECT * FROM Fruittie")
-    fun getAllAsFlow(): Flow<List<Fruittie>>
+    fun getAllAsFlow(): LiveData<List<Fruittie>>
 
     @Query("SELECT COUNT(*) as count FROM Fruittie")
     fun count(): Int
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
-    fun loadAllElif(ids: List<Long>): List<Fruittie>
+    fun loadAll(ids: List<Long>): List<Fruittie>
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
     fun loadMapped(ids: List<Long>): Map<

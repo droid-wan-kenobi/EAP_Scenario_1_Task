@@ -15,6 +15,7 @@
  */
 package com.example.fruitties.android.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
@@ -24,12 +25,15 @@ import kotlinx.serialization.Serializable
 @Entity
 data class Fruittie(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @SerialName("name")
-    val name: String,
+    @SerialName("fruitName")
+    val fruitName: String,
     @SerialName("serving_size")
     val servingSize: String,
     @SerialName("calories")
     val calories: String,
+    @SerialName("color")
+    @ColumnInfo(defaultValue = "unknown")
+    val color: String
 )
 
 data class CartItemDetails(

@@ -17,9 +17,10 @@ package com.example.fruitties.android.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.fruitties.android.database.AppDatabase
 import com.example.fruitties.android.database.CartDataStore
-import com.example.fruitties.android.database.dbFileName
 import com.example.fruitties.android.network.FruittieApi
 import com.example.fruitties.android.network.FruittieNetworkApi
 import io.ktor.client.HttpClient
@@ -30,13 +31,17 @@ import kotlinx.serialization.json.Json
 
 class Factory(private val app: Application) {
     fun createRoomDatabase(): AppDatabase {
-        val dbFile = app.getDatabasePath(dbFileName)
         return Room.databaseBuilder(
             context = app,
             klass = AppDatabase::class.java,
-            name = "fruitCart.db"
+            name = "shoppingCart.db"
         )
-            .createFromAsset("assets/shoppingCart.db")
+            .createFromAsset("shoppingCart.db")
+            .addMigrations(
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_4_5
+            )
             .build()
     }
 
@@ -56,6 +61,26 @@ class Factory(private val app: Application) {
         },
         apiUrl = "https://yenerm.github.io/frutties/",
     )
+
+    companion object {
+        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Fruittie ADD COLUMN color TEXT NOT NULL DEFAULT 'unknown'")
+            }
+        }
+
+        val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS `Veggie` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fruitName` TEXT NOT NULL, `servingSize` TEXT NOT NULL, `calories` TEXT NOT NULL)")
+            }
+        }
+
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE `Veggie`")
+            }
+        }
+    }
 }
 
 val json = Json { ignoreUnknownKeys = true }

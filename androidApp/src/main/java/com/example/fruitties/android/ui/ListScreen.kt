@@ -181,7 +181,7 @@ fun FruittieItem(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = item.name,
+                    text = item.fruitName,
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
@@ -220,7 +220,7 @@ fun CartDetailsView(cart: List<CartItemDetails>, modifier: Modifier = Modifier) 
         modifier.padding(horizontal = 32.dp),
     ) {
         cart.forEach { item ->
-            Text(text = "${item.fruittie.name}: ${item.count}")
+            Text(text = "${item.fruittie.fruitName}: ${item.count}")
         }
     }
 }
@@ -229,7 +229,7 @@ fun CartDetailsView(cart: List<CartItemDetails>, modifier: Modifier = Modifier) 
 @Composable
 fun ItemPreview() {
     FruittieItem(
-        Fruittie(name = "Fruit", servingSize = "100 grams", calories = "240"),
+        Fruittie(fruitName = "Fruit", servingSize = "100 grams", calories = "240", color = "purple"),
         onAddToCart = {},
     )
 }

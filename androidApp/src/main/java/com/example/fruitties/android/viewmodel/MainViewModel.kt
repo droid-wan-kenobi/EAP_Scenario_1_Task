@@ -18,6 +18,7 @@ package com.example.fruitties.android.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.MutableCreationExtras
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: DataRepository) : ViewModel() {
 
     val homeUiState: StateFlow<HomeUiState> =
-        repository.getData().map { HomeUiState(it) }
+        repository.getData().asFlow().map { HomeUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -44,7 +45,7 @@ class MainViewModel(private val repository: DataRepository) : ViewModel() {
             )
 
     val cartUiState: StateFlow<CartUiState> =
-        repository.cartDetails.map { CartUiState(it) }
+        repository.cartDetails.asFlow().map { CartUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),

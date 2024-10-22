@@ -87,6 +87,7 @@ dependencies {
     // Ktor OkHttp client for Android
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.room.runtime)

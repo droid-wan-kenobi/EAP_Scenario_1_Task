@@ -27,6 +27,7 @@ kotlinx-coroutines = "1.8.0"
 kotlinxDatetime = "0.6.0-RC.2"
 ksp = "2.0.10-1.0.24"
 ktorVersion = "2.3.8"
+lifecycleLivedataKtx = "2.8.6"
 pagingComposeAndroid = "3.3.2"
 skie = "0.8.4"
 sqlite = "2.5.0-alpha07"
@@ -36,6 +37,7 @@ spotless = "6.19.0"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-datastore-core-okio = { group = "androidx.datastore", name = "datastore-core-okio", version.ref = "dataStoreVersion" }
 androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "dataStoreVersion" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "androidx-paging" }
 androidx-paging-compose-android = { group = "androidx.paging", name = "paging-compose-android", version.ref = "pagingComposeAndroid" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
