@@ -26,22 +26,22 @@ import kotlinx.coroutines.flow.Flow
 interface FruittieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(fruittie: Fruittie)
+    fun insert(fruittie: Fruittie)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(fruitties: List<Fruittie>)
+    fun insert(fruitties: List<Fruittie>)
 
     @Query("SELECT * FROM Fruittie")
     fun getAllAsFlow(): Flow<List<Fruittie>>
 
     @Query("SELECT COUNT(*) as count FROM Fruittie")
-    suspend fun count(): Int
+    fun count(): Int
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
-    suspend fun loadAllElif(ids: List<Long>): List<Fruittie>
+    fun loadAllElif(ids: List<Long>): List<Fruittie>
 
     @Query("SELECT * FROM Fruittie WHERE id in (:ids)")
-    suspend fun loadMapped(ids: List<Long>): Map<
+    fun loadMapped(ids: List<Long>): Map<
         @MapColumn(columnName = "id")
         Long,
         Fruittie,
