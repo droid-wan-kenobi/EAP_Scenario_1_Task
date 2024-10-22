@@ -1,0 +1,64 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.example.fruitties.android.di
+
+import android.app.Application
+import androidx.room.Room
+import com.example.fruitties.android.database.AppDatabase
+import com.example.fruitties.android.database.CartDataStore
+import com.example.fruitties.android.database.dbFileName
+import com.example.fruitties.android.network.FruittieApi
+import com.example.fruitties.android.network.FruittieNetworkApi
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.json.Json
+
+class Factory(private val app: Application) {
+    fun createRoomDatabase(): AppDatabase {
+        val dbFile = app.getDatabasePath(dbFileName)
+        return Room.databaseBuilder<AppDatabase>(
+            context = app,
+            name = dbFile.absolutePath,
+        )
+//            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .build()
+    }
+
+    fun createCartDataStore(): CartDataStore {
+        return CartDataStore {
+            app.filesDir.resolve(
+                "cart.json",
+            ).absolutePath
+        }
+    }
+
+    fun createApi(): FruittieApi = commonCreateApi()
+}
+
+internal fun commonCreateApi(): FruittieApi = FruittieNetworkApi(
+    client = HttpClient {
+        install(ContentNegotiation) {
+            json(json, contentType = ContentType.Any)
+        }
+    },
+    apiUrl = "https://yenerm.github.io/frutties/",
+)
+
+val json = Json { ignoreUnknownKeys = true }
