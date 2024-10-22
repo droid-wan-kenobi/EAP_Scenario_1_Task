@@ -26,18 +26,17 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 
 class Factory(private val app: Application) {
     fun createRoomDatabase(): AppDatabase {
         val dbFile = app.getDatabasePath(dbFileName)
-        return Room.databaseBuilder<AppDatabase>(
+        return Room.databaseBuilder(
             context = app,
-            name = dbFile.absolutePath,
+            klass = AppDatabase::class.java,
+            name = "fruitCart.db"
         )
-//            .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .createFromAsset("assets/shoppingCart.db")
             .build()
     }
 
@@ -49,16 +48,14 @@ class Factory(private val app: Application) {
         }
     }
 
-    fun createApi(): FruittieApi = commonCreateApi()
+    fun createApi(): FruittieApi = FruittieNetworkApi(
+        client = HttpClient {
+            install(ContentNegotiation) {
+                json(json, contentType = ContentType.Any)
+            }
+        },
+        apiUrl = "https://yenerm.github.io/frutties/",
+    )
 }
-
-internal fun commonCreateApi(): FruittieApi = FruittieNetworkApi(
-    client = HttpClient {
-        install(ContentNegotiation) {
-            json(json, contentType = ContentType.Any)
-        }
-    },
-    apiUrl = "https://yenerm.github.io/frutties/",
-)
 
 val json = Json { ignoreUnknownKeys = true }

@@ -191,7 +191,7 @@ fun FruittieItem(
                         .padding(top = 8.dp),
                 )
                 Text(
-                    text = item.fullName,
+                    text = item.servingSize,
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 8.dp),
@@ -229,7 +229,7 @@ fun CartDetailsView(cart: List<CartItemDetails>, modifier: Modifier = Modifier) 
 @Composable
 fun ItemPreview() {
     FruittieItem(
-        Fruittie(name = "Fruit", fullName = "Fruitus Mangorus", calories = "240"),
+        Fruittie(name = "Fruit", servingSize = "100 grams", calories = "240"),
         onAddToCart = {},
     )
 }

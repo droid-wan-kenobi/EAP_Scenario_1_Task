@@ -26,8 +26,8 @@ data class Fruittie(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @SerialName("name")
     val name: String,
-    @SerialName("full_name")
-    val fullName: String,
+    @SerialName("serving_size")
+    val servingSize: String,
     @SerialName("calories")
     val calories: String,
 )

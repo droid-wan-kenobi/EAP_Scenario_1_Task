@@ -15,18 +15,40 @@
  */
 package com.example.fruitties.android.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.RenameColumn
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
+import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Fruittie::class], version = 1)
-//@ConstructedBy(AppDatabaseConstructor::class)
+@Database(
+    entities = [Fruittie::class],
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(
+            from = 1,
+            to = 2,
+            spec = AppDatabase.FruittieAutoMigrationSpec::class
+        )
+    ]
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun fruittieDao(): FruittieDao
+
+    @RenameColumn.Entries(
+        RenameColumn(
+            tableName = "Fruittie",
+            fromColumnName = "fullName",
+            toColumnName = "servingSize"
+        )
+    )
+    internal class FruittieAutoMigrationSpec : AutoMigrationSpec {
+        override fun onPostMigrate(db: SupportSQLiteDatabase) {
+            // Do something
+        }
+    }
 }
 
-//// The Room compiler generates the `actual` implementations.
-//@Suppress("NO_ACTUAL_FOR_EXPECT")
-//expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
-//    override fun initialize(): AppDatabase
-//}
-const val dbFileName = "fruits.db"
+const val dbFileName = "shoppingCart.db"
